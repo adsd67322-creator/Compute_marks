@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Grade Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .course-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-course-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-course-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .course-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateX(5px);
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .course-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .calculate-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .percentage-display {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .grade-display {
+            font-size: 1.5rem;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            color: #6c757d;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calculate-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 IGNOU Academic Grade Calculator</h1>
+            <p>Calculate your overall percentage based on course credits and marks</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 4-Credit Courses Section -->
+            <div class="course-section">
+                <div class="section-title">
+                    <span>4-Credit Courses - Theory Subjects (Max 50 marks each)</span>
+                    <button class="add-course-btn" onclick="addFourCreditCourse()">+ Add Theory Subject</button>
+                </div>
+                <div id="fourCreditCourses"></div>
+            </div>
+
+            <!-- 2-Credit Courses Section -->
+            <div class="course-section">
+                <div class="section-title">
+                    <span>2-Credit Courses - Practical Subjects (Max 25 marks each)</span>
+                    <button class="add-course-btn" onclick="addTwoCreditCourse()">+ Add Practical Subject</button>
+                </div>
+                <div id="twoCreditCourses"></div>
+            </div>
+
+            <!-- Calculate Button -->
+            <div class="calculate-section">
+                <button class="calculate-btn" onclick="calculate()">Calculate Overall Percentage</button>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultSection" class="result-section">
+                <div class="percentage-display" id="percentageDisplay">0%</div>
+                <div class="grade-display" id="gradeDisplay">Grade: F</div>
+                <div class="message" id="messageDisplay">Keep working hard!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let fourCreditCourses = [];
+        let twoCreditCourses = [];
+        let fourCreditCourseCount = 0;
+        let twoCreditCourseCount = 0;
+
+        // Backend calculation function
+        function calculateOverallPercentage() {
+            let totalObtained = 0;
+            let num2CreditCourses = twoCreditCourses.length;
+            let num4CreditCourses = fourCreditCourses.length;
+            let totalMaximum = (num2CreditCourses * 25) + (num4CreditCourses * 50);
+
+            // Calculate for all 4-credit courses (theory only)
+            for (let course of fourCreditCourses) {
+                let theoryMarks = (course.termEndTheory * 0.35) + (course.assignment * 0.15);
+                
+                // Cap at 50 marks maximum for 4-credit courses
+                let courseTotal = Math.min(theoryMarks, 50);
+                totalObtained += courseTotal;
+            }
+
+            // Add all 2-credit course marks (max 25 each)
+            for (let course of twoCreditCourses) {
+                // Calculate practical marks from Term End Practical and Lab 1
+                let practicalMarks = (course.termEndPractical * 0.175) + (course.lab1 * 0.075);
+                let courseMarks = Math.min(practicalMarks, 25);
+                totalObtained += courseMarks;
+            }
+
+            if (totalMaximum === 0) return 0;
+            return (totalObtained / totalMaximum) * 100;
+        }
+
+        // Add a new 4-credit course
+        function addFourCreditCourse() {
+            const courseId = ++fourCreditCourseCount;
+            const courseHtml = `
+                <div class="course-card" id="fourCredit-${courseId}">
+                    <div class="course-header">
+                        <input type="text" class="course-name" placeholder="Theory Subject Name" id="fourCreditName-${courseId}">
+                        <button class="remove-btn" onclick="removeFourCreditCourse(${courseId})">Remove</button>
+                    </div>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>Term End Theory (Max 100)</label>
+                            <input type="number" id="termEndTheory-${courseId}" min="0" max="100" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Assignment (Max 100)</label>
+                            <input type="number" id="assignment-${courseId}" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('fourCreditCourses').insertAdjacentHTML('beforeend', courseHtml);
+        }
+
+        // Add a new 2-credit course
+        function addTwoCreditCourse() {
+            const courseId = ++twoCreditCourseCount;
+            const courseHtml = `
+                <div class="course-card" id="twoCredit-${courseId}">
+                    <div class="course-header">
+                        <input type="text" class="course-name" placeholder="Practical Subject Name" id="twoCreditName-${courseId}">
+                        <button class="remove-btn" onclick="removeTwoCreditCourse(${courseId})">Remove</button>
+                    </div>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>Term End Practical (Max 100)</label>
+                            <input type="number" id="termEndPractical2-${courseId}" min="0" max="100" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Lab 1 (Max 100)</label>
+                            <input type="number" id="lab1-2credit-${courseId}" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('twoCreditCourses').insertAdjacentHTML('beforeend', courseHtml);
+        }
+
+        // Remove a 4-credit course
+        function removeFourCreditCourse(courseId) {
+            const element = document.getElementById(`fourCredit-${courseId}`);
+            element.style.animation = 'fadeInUp 0.3s ease-out reverse';
+            setTimeout(() => element.remove(), 300);
+        }
+
+        // Remove a 2-credit course
+        function removeTwoCreditCourse(courseId) {
+            const element = document.getElementById(`twoCredit-${courseId}`);
+            element.style.animation = 'fadeInUp 0.3s ease-out reverse';
+            setTimeout(() => element.remove(), 300);
+        }
+
+        // Collect data from form and calculate
+        function calculate() {
+            // Reset arrays
+            fourCreditCourses = [];
+            twoCreditCourses = [];
+
+            // Collect 4-credit course data
+            const fourCreditCards = document.querySelectorAll('[id^="fourCredit-"]');
+            fourCreditCards.forEach(card => {
+                const courseId = card.id.split('-')[1];
+                fourCreditCourses.push({
+                    name: document.getElementById(`fourCreditName-${courseId}`).value || `Theory Subject ${courseId}`,
+                    termEndTheory: parseFloat(document.getElementById(`termEndTheory-${courseId}`).value) || 0,
+                    assignment: parseFloat(document.getElementById(`assignment-${courseId}`).value) || 0
+                });
+            });
+
+            // Collect 2-credit course data
+            const twoCreditCards = document.querySelectorAll('[id^="twoCredit-"]');
+            twoCreditCards.forEach(card => {
+                const courseId = card.id.split('-')[1];
+                twoCreditCourses.push({
+                    name: document.getElementById(`twoCreditName-${courseId}`).value || `Practical Subject ${courseId}`,
+                    termEndPractical: parseFloat(document.getElementById(`termEndPractical2-${courseId}`).value) || 0,
+                    lab1: parseFloat(document.getElementById(`lab1-2credit-${courseId}`).value) || 0
+                });
+            });
+
+            // Calculate percentage
+            const percentage = calculateOverallPercentage();
+            
+            // Determine grade
+            let grade = 'F';
+            let message = 'Keep working hard!';
+            
+            if (percentage >= 90) {
+                grade = 'A+';
+                message = 'Outstanding performance! 🌟';
+            } else if (percentage >= 80) {
+                grade = 'A';
+                message = 'Excellent work! 🎉';
+            } else if (percentage >= 70) {
+                grade = 'B+';
+                message = 'Great job! 👏';
+            } else if (percentage >= 60) {
+                grade = 'B';
+                message = 'Good work! 👍';
+            } else if (percentage >= 50) {
+                grade = 'C';
+                message = 'Satisfactory performance';
+            } else if (percentage >= 40) {
+                grade = 'D';
+                message = 'Needs improvement';
+            } else {
+                grade = 'F';
+                message = 'Keep working hard!';
+            }
+
+            // Display results
+            document.getElementById('percentageDisplay').textContent = percentage.toFixed(2) + '%';
+            document.getElementById('gradeDisplay').textContent = 'Grade: ' + grade;
+            document.getElementById('messageDisplay').textContent = message;
+            document.getElementById('resultSection').classList.add('show');
+
+            // Smooth scroll to results
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Add initial courses on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            addFourCreditCourse();
+            addTwoCreditCourse();
+        });
+    </script>
+</body>
+</html>
